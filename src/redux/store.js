@@ -1,10 +1,10 @@
-// add middleware to our store to catch actions and use it just to log and pass it along
-import { createStore, applyMiddleware } from "redux";
-import logger from "redux-logger";
-import rootReducer from "./root-reducer";
+import { createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger';
 
-// all of the middlewares we want into an array
+import rootReducer from './root-reducer';
+
 const middlewares = [logger];
+
 const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
 export default store;
