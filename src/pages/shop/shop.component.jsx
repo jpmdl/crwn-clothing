@@ -13,7 +13,7 @@ import {
 import { updateCollections } from "../../redux/shop/shop.actions";
 
 import WithSpinner from "../../components/with-spinner/with-spinner.component";
-import { CollectionsOverviewContainer } from "../../components/collections-overview/collections-overview.styles";
+//import { CollectionsOverviewContainer } from "../../components/collections-overview/collections-overview.styles";
 
 const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
 const CollectionPageWithSpinner = WithSpinner(CollectionPage);
@@ -26,14 +26,30 @@ class ShopPage extends React.Component {
   componentDidMount() {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection("collections");
-    collectionRef.onSnapshot(async snapshot => {
+
+    // ** Observable pattern **
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(async snapshot => {
+    //   const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+    //   updateCollections(collectionsMap);
+    //   this.setState({ loading: false });
+    // });
+
+    // ** Promise pattern **
+    collectionRef.get().then(snapshot => {
       const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
       updateCollections(collectionsMap);
       this.setState({ loading: false });
     });
+
+    // ** API calls **
+    // fetch('https://firestore.googleapis.com/v1/projects/crwn-db-aeff9/databases/(default)/documents/collections')
+    // .then(res => res.json())
+    // .then(collections => console.log)
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    if (this.unsubscribeFromSnapshot) this.unsubscribeFromSnapshot();
+  }
 
   render() {
     const { match } = this.props;
