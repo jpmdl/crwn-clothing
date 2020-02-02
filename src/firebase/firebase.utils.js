@@ -39,6 +39,44 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  // collectionRef is always returned, even if it doesn't exists
+  // so we can use collectionRef to add items on the correct path already
+  const collectionRef = firestore.collection(collectionKey);
+
+  // because set is made one at a time, we have to batch all of them
+  const batch = firestore.batch();
+  objectsToAdd.forEach(obj => {
+    // give me a document reference and generate a random id fo me
+    // we can set an id inside doc() call also
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+
+  // will fire batch commands
+  return await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = collections => {
+  const transformedCollection = collections.docs.map(doc => {
+    const { title, items } = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()), // converts into a version that a browser can read
+      id: doc.id,
+      title,
+      items
+    };
+  });
+
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator; // returns to every iteration
+  }, {}); // -> initial object
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
