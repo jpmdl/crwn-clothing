@@ -17,3 +17,13 @@ export const selectCollection = collectionUrlParam =>
   createSelector([selectCollections], collections =>
     collections ? collections[collectionUrlParam] : null
   );
+
+export const selectIsCollectionFetching = createSelector(
+  [selectShop],
+  shop => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+  [selectShop],
+  shop => !!shop.collections // double bang returns true or false if next object is truthy or falsy respectivly
+);
