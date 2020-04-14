@@ -9,7 +9,7 @@ const config = {
   projectId: "crwn-db-aeff9",
   storageBucket: "crwn-db-aeff9.appspot.com",
   messagingSenderId: "387981978466",
-  appId: "1:387981978466:web:81812a7b51045ffce9da3b"
+  appId: "1:387981978466:web:81812a7b51045ffce9da3b",
 };
 
 firebase.initializeApp(config);
@@ -29,7 +29,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         displayName,
         email,
         createdAt,
-        ...additionalData
+        ...additionalData,
       });
     } catch (error) {
       console.log("error creating user", error.message);
@@ -49,7 +49,7 @@ export const addCollectionAndDocuments = async (
 
   // because set is made one at a time, we have to batch all of them
   const batch = firestore.batch();
-  objectsToAdd.forEach(obj => {
+  objectsToAdd.forEach((obj) => {
     // give me a document reference and generate a random id fo me
     // we can set an id inside doc() call also
     const newDocRef = collectionRef.doc();
@@ -60,14 +60,14 @@ export const addCollectionAndDocuments = async (
   return await batch.commit();
 };
 
-export const convertCollectionsSnapshotToMap = collections => {
-  const transformedCollection = collections.docs.map(doc => {
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map((doc) => {
     const { title, items } = doc.data();
     return {
       routeName: encodeURI(title.toLowerCase()), // converts into a version that a browser can read
       id: doc.id,
       title,
-      items
+      items,
     };
   });
 
@@ -77,9 +77,9 @@ export const convertCollectionsSnapshotToMap = collections => {
   }, {}); // -> initial object
 };
 
-export const getCurrrentUser = () => {
+export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged(userAuth => {
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
       unsubscribe();
       resolve(userAuth);
     }, reject);
